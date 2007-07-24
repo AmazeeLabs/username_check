@@ -1,0 +1,110 @@
+<?php
+
+/**
+ * Implementation of hook_form_alter().
+ */
+function username_check_form_alter($form_id, &$form) {
+
+  if ('user_register' == $form_id) {
+    username_check_load_css();
+    username_check_load_js();
+    username_check_path_form($form);
+  }
+
+}
+
+/**
+ * Build a username check form.
+ */
+function username_check_path_form(&$form) {
+  $form['username_button'] = array(
+    '#type' => 'button',
+    '#value' => t('Check availability'),
+  );
+  $form['username_message'] = array(
+    '#type' => 'markup',
+    '#prefix' => '<div id="username-message" class="username-message">',
+    '#value' => true,
+    '#suffix' => '</div>'
+  );
+}
+
+/**
+ * Load CSS file.
+ */
+function username_check_load_css() {
+  drupal_add_css(drupal_get_path('module', 'username_check'). '/username_check.css');
+}
+
+/**
+ * Load username_check JS file and pass settings.
+ */
+function username_check_load_js() {
+  drupal_add_js(drupal_get_path('module', 'username_check'). '/username_check.js');
+  drupal_add_js(array(
+    'username_check' => array(
+      'ajaxUrl' => url('username_check/isunique', null, null, true),
+      'msgWait' => t('Checking username availability ...')
+    ),
+  ), 'setting');
+}
+
+/**
+ * Implementation of hook_menu().
+ */
+function username_check_menu($may_cache) {
+  $items  = array();
+
+  if($may_cache) {
+    $items[] = array(
+      'path' => 'username_check/isunique',
+      'title' => 'Username check',
+      'callback' => 'username_check_menu_isunique',
+      'access' => true,
+      'type' => MENU_CALLBACK
+    );
+  }
+  return $items;
+}
+
+/**
+ * Set browser not to cache AJAX return ersults.
+ */
+function username_check_set_header_nocache() {
+  header("Expires: Sun, 19 Nov 1978 05:00:00 GMT");
+  header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+  header("Cache-Control: no-store, no-cache, must-revalidate");
+  header("Cache-Control: post-check=0, pre-check=0", false);
+  header("Pragma: no-cache");
+}
+
+/**
+ * Main AJAX function: originality checking menu callback.
+ */
+function username_check_menu_isunique() {
+  $output = array();
+
+  $username = check_plain($_GET['username']);
+  $user = username_check_exists($username);
+
+//  $output['username'] = $username;
+  if (is_array($user) && !empty($user)) {
+    $output['exists'] = true;
+    $output['msg'] = t('Unfortunatly, username %username is not available!', array('%username' => $user['name']));
+  } else {
+    $output['exists'] = false;
+    $output['msg'] = t('Username %username is available.', array('%username' => $username));
+  }
+
+  username_check_set_header_nocache();
+
+  print drupal_to_js($output);
+  exit();
+}
+
+/**
+ * Query user table to check if such username is already exists.
+ */
+function username_check_exists($username) {
+  return db_fetch_array(db_query("SELECT * FROM {users} u WHERE u.name = '%s'", $username));
+}
