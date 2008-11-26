@@ -20,7 +20,7 @@ function username_check_menu() {
   );
   $items['admin/settings/username_check'] = array(
     'title' => 'Username check',
-    'type' => MENU_LOCAL_TASK,
+    'type' => MENU_NORMAL_ITEM,
     'page callback' => 'drupal_get_form',
     'page arguments' => array('username_check_settings'),
     'access arguments' => array('administer site configuration'),
@@ -37,11 +37,18 @@ function username_check_form_user_register_alter(&$form) {
   $mode = variable_get('username_check_mode', 'auto');
   _username_check_load_resources($mode);
 
+  if (isset($form['account']) && $form['account']['#type'] == 'fieldset') {
+    $form_group = &$form['account'];
+  }
+  else {
+    $form_group = &$form;
+  }
+  
   if ($mode == 'manual') {
-    $form['name']['#weight'] = -5;
-    $form['account']['#weight'] = -4;
+    $form_group['name']['#weight'] = -5;
+    $form_group['username_check_button']['#weight'] = -4;
 
-    $form['account']['username_check_button'] = array(
+    $form_group['username_check_button'] = array(
       '#type' => 'button',
       '#button_type' => 'button', // Really not supported in D6.6 :'(
       '#value' => t('Check username'),
@@ -50,7 +57,7 @@ function username_check_form_user_register_alter(&$form) {
   }
   elseif ($mode == 'auto') {
     $module_path = drupal_get_path('module', 'username_check');
-    $form['name']['#suffix'] = '<div id="username-check-message"></div><div id="username-check-informer" class="username-check-informer">&nbsp;</div>';
+    $form_group['name']['#suffix'] = '<div id="username-check-message"></div><div id="username-check-informer" class="username-check-informer">&nbsp;</div>';
   }
 }
 

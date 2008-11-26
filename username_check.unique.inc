@@ -14,14 +14,14 @@ function username_check_callback() {
 
   $username = $_GET['username'];
 
-  // Verify the syntax of the given name
+  // Проверка на наличие недопустимых символов
   $ret = user_validate_name($username);
   if ($ret) {
     $output['allowed'] = FALSE;
     $output['msg'] = $ret;
   }
   else {
-    // Access Rules check
+    // Проверка на соответствие Access Rules
     $ret = drupal_is_denied('user', $username);
     if ($ret) {
       $output['allowed'] = FALSE;
@@ -49,7 +49,7 @@ function username_check_callback() {
 }
 
 /**
- * Query user table to check if such username already exists.
+ * Query user table to check if such username is already exists.
  */
 function _username_check_is_user_exists($username) {
   return db_result(db_query("SELECT COUNT(u.name) FROM {users} u WHERE u.name = '%s'", $username));

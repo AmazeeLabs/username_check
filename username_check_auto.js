@@ -5,7 +5,7 @@ if (Drupal.jsEnabled) {
   $(document).ready(function() {
     var usernamePos = $('#edit-name').position();
     var usernameWidth = $('#edit-name').width();
-    $('#username-check-informer').css({left: usernamePos.left+usernameWidth+10, top: usernamePos.top}).show();
+    $('#username-check-informer').css({left: (usernamePos.left+usernameWidth+10)+'px', top: (usernamePos.top)+'px'}).show();
     
     $('#edit-name').
       keyup(function() {
