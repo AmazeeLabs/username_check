@@ -1,3 +1,6 @@
-name = Username AJAX check
-description = Check username originality on registaration or create user form via AJAX request.
-version = VERSION
+; $Id$
+name = "Username AJAX check"
+description = "Check username originality on registration or create user form via AJAX request."
+core = 6.x
+package = Registration
+dependencies[] = user
