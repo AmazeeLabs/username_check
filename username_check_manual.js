@@ -3,7 +3,7 @@ if (Drupal.jsEnabled) {
     var username = '';
     $('#edit-username-check-button').show();
     $('#edit-username-check-button').click(function() {
-      username = $("input#edit-name").val();
+      username = $("#username-check-wrapper input").val();
 
       $.ajax({
         url: Drupal.settings.usernameCheck.ajaxUrl,

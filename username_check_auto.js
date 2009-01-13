@@ -3,13 +3,13 @@ var usernameCheckUsername = '';
 
 if (Drupal.jsEnabled) {
   $(document).ready(function() {
-    var usernamePos = $('#edit-name').position();
-    var usernameWidth = $('#edit-name').width();
+    var usernamePos = $('#username-check-wrapper input').position();
+    var usernameWidth = $('#username-check-wrapper input').width();
     $('#username-check-informer').css({left: (usernamePos.left+usernameWidth+10)+'px', top: (usernamePos.top)+'px'}).show();
     
-    $('#edit-name').
+    $('#username-check-wrapper input').
       keyup(function() {
-        if($('#edit-name').val() != usernameCheckUsername) {
+        if($('#username-check-wrapper input').val() != usernameCheckUsername) {
           clearTimeout(usernameCheckTimer);
           usernameCheckTimer = setTimeout('usernameCheck()', Drupal.settings.usernameCheck.delay*1000);
           
@@ -24,7 +24,7 @@ if (Drupal.jsEnabled) {
         }
       }).
       blur(function() {
-        if($('#edit-name').val() != usernameCheckUsername) {
+        if($('#username-check-wrapper input').val() != usernameCheckUsername) {
           usernameCheck();
         }
       });
@@ -33,7 +33,7 @@ if (Drupal.jsEnabled) {
 
 function usernameCheck() {
   clearTimeout(usernameCheckTimer);
-  usernameCheckUsername = $('#edit-name').val();
+  usernameCheckUsername = $('#username-check-wrapper input').val();
 
   $.ajax({
     url: Drupal.settings.usernameCheck.ajaxUrl,
@@ -50,7 +50,7 @@ function usernameCheck() {
         $("#username-check-informer").
           removeClass('username-check-informer-progress').
           addClass('username-check-informer-accepted');
-        $("#edit-name").
+        $("#username-check-wrapper input").
           removeClass('error');
       }
       else {
