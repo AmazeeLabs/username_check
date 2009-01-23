@@ -5,11 +5,11 @@ Drupal.behaviors.usernameCheckManualBehavior = function (context) {
     .addClass('username-check-behavior-processed')
     .show()
     .click(function () {
-      Drupal.usernameCheckUsername = $("#username-check-wrapper input").val();
+      var loginField = $("#username-check-wrapper input");
       
       $.ajax({
         url: Drupal.settings.usernameCheck.ajaxUrl,
-        data: {username: Drupal.usernameCheckUsername},
+        data: {username: loginField.val()},
         dataType: 'json',
         beforeSend: function() {
           $("#username-check-message")
@@ -24,6 +24,9 @@ Drupal.behaviors.usernameCheckManualBehavior = function (context) {
             $("#username-check-message")
               .removeClass('username-check-message-progress')
               .addClass('username-check-message-accepted');
+            
+            loginField
+              .removeClass('error');
           }
           else {
             $("#username-check-message")

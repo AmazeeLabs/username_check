@@ -4,13 +4,14 @@ Drupal.behaviors.usernameCheckAutoBehavior = function (context) {
   $('#username-check-wrapper input:not(.username-check-behavior-processed)', context)
     .addClass('username-check-behavior-processed')
     .each(function () {
-      var loginField = $(this); 
+      var loginField = $(this);
+      
+      var usernamePos = loginField.position();
+      var usernameWidth = loginField.width();
       
       Drupal.usernameCheckUsername = '';
-      Drupal.usernameCheckUsernamePos = loginField.position();
-      Drupal.usernameCheckUsernameWidth = loginField.width();
       $('#username-check-informer')
-        .css({left: (Drupal.usernameCheckUsernamePos.left+Drupal.usernameCheckUsernameWidth+10)+'px', top: (Drupal.usernameCheckUsernamePos.top)+'px'})
+        .css({left: (usernamePos.left+usernameWidth+10)+'px', top: (usernamePos.top)+'px'})
         .show(); 
       
       loginField
@@ -25,7 +26,8 @@ Drupal.behaviors.usernameCheckAutoBehavior = function (context) {
                 .removeClass('username-check-informer-rejected');
             }
               
-            $("#username-check-message").hide();
+            $("#username-check-message")
+              .hide();
           }
         })
         .blur(function () {
@@ -42,7 +44,7 @@ function usernameCheck(loginField) {
   
   $.ajax({
     url: Drupal.settings.usernameCheck.ajaxUrl,
-    data: {username: loginField.val()},
+    data: {username: Drupal.usernameCheckUsername},
     dataType: 'json',
     beforeSend: function() {
       $("#username-check-informer")
