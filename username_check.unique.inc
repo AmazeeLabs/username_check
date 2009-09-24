@@ -52,5 +52,5 @@ function username_check_callback() {
  * Query user table to check if such username is already exists.
  */
 function _username_check_is_user_exists($username) {
-  return db_result(db_query("SELECT COUNT(u.name) FROM {users} u WHERE u.name = '%s'", $username));
+  return db_result(db_query("SELECT COUNT(u.name) FROM {users} u WHERE LOWER(u.name) = LOWER('%s')", $username));
 }
