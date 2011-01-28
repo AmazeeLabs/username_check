@@ -1,35 +1,26 @@
-#edit-username-check-button {
-  display: none;
-}
-.username-check-message {
-  color: #FF0000;
-  font-weight: normal;
-  display:none;
-}
-.username-check-message-progress {
-  color: #3E4A54;
-  font-weight: bold;
-}
-.username-check-message-accepted {
-  color: #417C12;
-}
-.username-check-message-rejected {
-  color: #FF0000;
-}
+/* $Id$ */
+
 #username-check-informer {
-  width: 16px;  
-  position: absolute;
-  display: none;
+  background: url(images/throbber.gif) center top no-repeat;
+  padding-left: 16px;
 }
-.username-check-informer {
-  background: url(images/throbber.gif) no-repeat center 3px;  
+.username-check-informer-progress { 
+  background: url(images/throbber.gif) no-repeat center -20px !important;  
 }
 .username-check-informer-accepted {
-  background: url(images/accepted.png) no-repeat left center; 
+  background: url(images/accepted.png) no-repeat center center !important; 
 }
 .username-check-informer-rejected {
-  background: url(images/rejected.png) no-repeat left center; 
+  background: url(images/rejected.png) no-repeat center center !important; 
 }
-.username-check-informer-progress {	
-  background: url(images/throbber.gif) no-repeat center -17px;  
+
+#username-check-message {
+  color: #FF0000;
+  font-weight: normal;
+  display: none;
+  margin: 15px 0;
 }
+
+.username-check-message-rejected {
+  color: #FF0000;
+} 

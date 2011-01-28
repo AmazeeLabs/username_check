@@ -1,6 +1,8 @@
 ; $Id$
-name = "Username AJAX check"
+
+name = "Username available AJAX check"
 description = "Check username originality on registration or create user form via AJAX request."
-core = 6.x
+core = 7.x
 package = Registration
 dependencies[] = user
+

@@ -1,10 +1,10 @@
 <?php
-// $Id$
+// $Id$ 
 
 /**
  * @file
  * Checks user name availability on registration page.
- */
+ */ 
 
 /**
  * Implementation of hook_menu().
@@ -18,66 +18,38 @@ function username_check_menu() {
     'access arguments' => array('access content'),
     'file' => 'username_check.unique.inc',
   );
-  $items['admin/settings/username_check'] = array(
+  $items['admin/config/system/username_check'] = array(
     'title' => 'Username check',
     'type' => MENU_NORMAL_ITEM,
     'page callback' => 'drupal_get_form',
     'page arguments' => array('username_check_settings'),
     'access arguments' => array('administer site configuration'),
-    'file' => 'username_check.settings.inc',
+    'file' => 'username_check.admin.inc',
   );
 
   return $items;
 }
 
-/**
- * Implementation of hook_form_$form-id_alter().
- */
-function username_check_form_user_register_alter(&$form) {
-  $mode = variable_get('username_check_mode', 'auto');
-  _username_check_load_resources($mode);
-
-  if (isset($form['account']) && $form['account']['#type'] == 'fieldset') {
-    $form_group = &$form['account'];
-  }
-  else {
-    $form_group = &$form;
-  }
+function username_check_form_user_register_form_alter(&$form) {
+  _username_check_load_resources();
   
-  if ($mode == 'manual') {
-    $form_group['name']['#weight'] = -5;
-    $form_group['name']['#prefix'] = '<div id="username-check-wrapper">';
-    $form_group['name']['#suffix'] = '</div>';
-
-    $form_group['username_check_button'] = array(
-      '#type' => 'button',
-      '#button_type' => 'button', // Really not supported in D6.8 and fixed in JS :'(
-      '#value' => t('Check username'),
-      '#prefix' => '<div id="username-check-message" class="username-check-message"></div>',
-      '#weight' => -4,
-    );
-  }
-  elseif ($mode == 'auto') {
-    $module_path = drupal_get_path('module', 'username_check');
-    $form_group['name']['#prefix'] = '<div id="username-check-wrapper">';
-    $form_group['name']['#suffix'] = '</div><div id="username-check-message"></div><div id="username-check-informer" class="username-check-informer">&nbsp;</div>';
-  }
+  $form['account']['name']['#field_suffix'] = '<span id="username-check-informer">&nbsp;</span>';
+  $form['account']['name']['#suffix'] = '<div id="username-check-message"></div>';
 }
 
 /**
  * Load username_check resources.
  */
-function _username_check_load_resources($mode) {
+function _username_check_load_resources() {
   $module_path = drupal_get_path('module', 'username_check');
-
-  drupal_add_css($module_path .'/username_check.css');
-  drupal_add_js($module_path ."/username_check_{$mode}.js");
+  drupal_add_css($module_path . '/username_check.css');
+  drupal_add_js($module_path . '/username_check.js');
 
   drupal_add_js(array(
     'usernameCheck' => array(
       'ajaxUrl' => url('username_check/isunique', array('absolute' => TRUE)),
-      'msgWait' => t('Checking username availability ...'),
       'delay'   => variable_get('username_check_delay', 1),
     ),
   ), 'setting');
+  
 }

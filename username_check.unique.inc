@@ -14,15 +14,13 @@ function username_check_callback() {
 
   $username = $_GET['username'];
 
-  // Проверка на наличие недопустимых символов
   $ret = user_validate_name($username);
   if ($ret) {
     $output['allowed'] = FALSE;
     $output['msg'] = $ret;
   }
   else {
-    // Проверка на соответствие Access Rules
-    $ret = drupal_is_denied('user', $username);
+    $ret = user_is_blocked($username);
     if ($ret) {
       $output['allowed'] = FALSE;
       $output['msg'] = t('The username %username is not allowed.', array('%username' => $username));
@@ -37,20 +35,16 @@ function username_check_callback() {
       }
       else {
         $output['allowed'] = TRUE;
-        $output['msg'] = t('The username %username is available.', array('%username' => $username));
       }
     }
   }
 
-  drupal_page_header();
-
-  print drupal_to_js($output);
-  exit();
+  drupal_json_output($output);
 }
 
 /**
  * Query user table to check if such username is already exists.
  */
 function _username_check_is_user_exists($username) {
-  return db_result(db_query("SELECT COUNT(u.name) FROM {users} u WHERE LOWER(u.name) = LOWER('%s')", $username));
+  return db_query("SELECT COUNT(u.name) count FROM {users} u WHERE LOWER(u.name) = LOWER(:username)", array(':username' => $username))->fetchField();
 }
