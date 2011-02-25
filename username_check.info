@@ -1,4 +1,3 @@
-; $Id$
 
 name = "Username available AJAX check"
 description = "Check username originality on registration or create user form via AJAX request."
